@@ -1,0 +1,18 @@
+services:
+  ssh-resume:
+    image: ssh-resume
+    container_name: ssh-resume
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5666:5666"
+    volumes:
+      - ./profiles:/profiles
+      - ./.ssh/:/.ssh/ # keep host key
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M

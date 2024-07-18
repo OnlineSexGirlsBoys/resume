@@ -1,0 +1,35 @@
+#!/usr/bin/env ansible-playbook
+- hosts: hk
+  gather_facts: no
+  remote_user: root
+  become: yes
+
+  tasks:
+    - name: create directory
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - /server/ssh-resume/profiles
+        - /server/ssh-resume/.ssh
+
+    - name: upload files
+      copy:
+        src: "{{ item }}"
+        dest: /server/ssh-resume
+      loop:
+        - dockerfile
+        - docker-compose.yml
+        - bin/linux/main
+
+    - name: update profiles
+      copy:
+        src: profiles/
+        dest: /server/ssh-resume/profiles/
+      tags: update_profiles
+
+    - name: start
+      command: docker compose up --build -d --force-recreate
+      args:
+        chdir: /server/ssh-resume/profiles/
+      
