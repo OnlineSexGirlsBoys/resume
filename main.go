@@ -211,9 +211,13 @@ func (m model) headerView() string {
 }
 
 func (m model) footerView() string {
+	src := "HomePage: https://github.com/onewesong/resume "
 	info := infoStyle.Render(fmt.Sprintf("%3.f%%", m.viewport.ScrollPercent()*100))
-	line := strings.Repeat("─", max(0, m.viewport.Width-lipgloss.Width(info)))
-	return lipgloss.JoinHorizontal(lipgloss.Center, line, info)
+	srcLength := lipgloss.Width(src)
+	infoLength := lipgloss.Width(info)
+	totalLineLength := max(0, m.viewport.Width-srcLength-infoLength)
+	line := strings.Repeat("─", totalLineLength/2)
+	return lipgloss.JoinHorizontal(lipgloss.Center, line, src, line, info)
 }
 
 func max(a, b int) int {
